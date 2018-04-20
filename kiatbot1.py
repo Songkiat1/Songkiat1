@@ -52,7 +52,7 @@ def handle_message(event):
             s += "%s %.2f บาท\n" % (p[0],p[1])
         line_bot_api.reply_message(event.reply_token,TextSendMessage(text=s))
     else:
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=event.message.text+"คร้าบๆๆ"))
+        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=event.message.text+"จ้าๆๆ"))
 
 if __name__ == "__main__":
     app.run()
