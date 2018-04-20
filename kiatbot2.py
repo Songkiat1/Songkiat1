@@ -71,7 +71,7 @@ def handle_text_message(event):
         if isinstance(event.source, SourceUser):
             profile = line_bot_api.get_profile(event.source.user_id)
             if profile.status_message is None:
-                show = "ไม่มีสเตตัส"
+                show = "ไม่มีสเตตัส-"
             else:
                 show = profile.status_message
             line_bot_api.reply_message(
