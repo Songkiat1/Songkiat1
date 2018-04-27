@@ -210,6 +210,19 @@ def handle_content_message(event):
             TextSendMessage(text=request.host_url + os.path.join('static', 'tmp', dist_name))
         ])
 
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    if event.message.text == "ราคาน้ำมัน":
+        #line_bot_api.reply_message(event.reply_token,TextSendMessage(text=event.message.text+"คร้าบๆๆ"))
+
+        l = oil.get_prices()
+        s = ""
+        for p in l:
+            s += "%s %.2f บาท\n" % (p[0],p[1])
+        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=s))
+    else:
+        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=event.message.text+"คร้าบๆๆ"))
+
 
 @handler.add(MessageEvent, message=FileMessage)
 def handle_file_message(event):
