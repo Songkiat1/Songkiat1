@@ -15,7 +15,8 @@ from linebot.exceptions import (
 )
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
-    ImageMessage, VideoMessage, AudioMessage, 
+    ImageMessage, VideoMessage, AudioMessage,
+    StickerMessage, 
 )
 
 #from oil import get_prices
@@ -25,10 +26,24 @@ app = Flask(__name__)
 
 last_images_part = ""
 
-line_bot_api = LineBotApi('CBVGGYmWiAq9NNKT9cFzMxfV7gKFu55vX/hGi3SzYmmy8oDk3z6Uft+xgRqu8ywcTWs1WtewsKcHD+q7DAfeSbZVA/QojSYCQbhByTm2HRM6gGfrS2WaEQGM7nyPtt2TeROJYRnHz7AlgUupZoj81AdB04t89/1O/w1cDnyilFU=')
-handler = WebhookHandler('23891fbbf252a6b24a97164613246d30')
+channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
+channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
 
-# @app.route("/", methods=['GET'])
+if channel_secret is None:
+   print("Specify LINE_CHANNEL_SECRET as environment variable.")
+   sys.exit(1)
+if channel_access_token is None:
+   print("Specify LINE_CHANNEL_ACCESS_TOKEN as environment variable.")
+   sys.exit(1)
+
+line_bot_api = LineBotApi(channel_access_token)
+handler = WebhookHandler(channel_secret)
+
+
+#ine_bot_api = LineBotApi('CBVGGYmWiAq9NNKT9cFzMxfV7gKFu55vX/hGi3SzYmmy8oDk3z6Uft+xgRqu8ywcTWs1WtewsKcHD+q7DAfeSbZVA/QojSYCQbhByTm2HRM6gGfrS2WaEQGM7nyPtt2TeROJYRnHz7AlgUupZoj81AdB04t89/1O/w1cDnyilFU=')
+#handler = WebhookHandler('1aa9fe25e4c531177bf471b0061e569c')
+
+# @app.route("/", methods=['GET'])e
 # def default_action():
   #  return 'Hello'
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'KiatBot', 'tmp')
@@ -88,6 +103,14 @@ def handle_content_message(event):
             TextSendMessage(text="เก็บรูป")
                 
         ])
+@handler.add(MessageEvent, message=StickerMessage)
+def handle_sticker_message(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        StickerSendMessage(
+            package_id=event.message.package_id,
+            sticker_id=event.message.sticker_id)
+    )
 
 
 @handler.add(MessageEvent, message=TextMessage)
